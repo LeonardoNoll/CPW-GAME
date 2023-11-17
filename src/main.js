@@ -1,3 +1,5 @@
+import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs";
+
 const k = kaboom({
     width: 900,
     height: 600,
@@ -5,25 +7,38 @@ const k = kaboom({
     letterbox: true
 })
 
+// const {
+//     origin,
+// } = k
+
 loadSprite("background", "assets/background.png")
 loadSprite("player", "assets/pacman-png-18.png")
 loadSprite("bullet", "assets/bullet.png")
 setBackground(48,25,52)
 
 
-function bullet(vx, vy, aim) {
-    const velocity = 30
-    return {
-        add(){
+// function bullet(vx, vy, aim) {
+//     const velocity = 30
+//     return {
+//         add(){
             
-        },
-        update() {
-            this.pos.x += velocity*vx
-            this.pos.y += velocity*vy
-        }
-    }
-}
+//         },
+//         update() {
+//             this.pos.x += velocity*vx
+//             this.pos.y += velocity*vy
+//         }
+//     }
+// }
 
+function spawnBullet(p) {
+    add([
+        sprite("bullet"),
+        area(),
+        pos(center()), //TODO fix this
+        move(mousePos(), 300), //TODO fix this
+        "bullet",
+    ])
+}
 
 scene("main", (index) => {
     add([
@@ -57,21 +72,9 @@ scene("main", (index) => {
             player.move(direction[dir].scale(400))
         })
     }
-
-    onMousePress(() => {
-        const aim = mousePos()
-        
-        add([
-            sprite("bullet"),
-            pos(player.pos),
-            scale(1),
-            area(),
-            origin(300,300),
-            bullet(34 * 22, aim * 10, aim)
-        ])
-        console.log(aim)
+    onMouseDown(() => {
+        spawnBullet(player.pos)
     });
-    // bullet.move(mousePos().scale(2))
 })
 
 
