@@ -1,4 +1,3 @@
-
 export function spawnBullet(p) {
     add([
         sprite("bullet"),
@@ -12,7 +11,5 @@ export function spawnBullet(p) {
         // console.log(mousePos().x-450),
         // console.log(mousePos().y-300),
         "bullet",
-    ])
-
-    
+    ]) 
 }

@@ -1,8 +1,7 @@
 import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs";
 import loadAll from "./loader.js";
 import { spawnBullet } from "./bullet.js";
-import { player } from "./player.js";
-import { enemy } from "./enemy.js";
+import { spawnEnemyBullet } from "./enemyBullet.js";
 
 const k = kaboom({
     width: 900,
@@ -26,7 +25,8 @@ scene("main", (index) => {
         pos(center()),
         anchor("center"),
         scale(0.10),
-        area(),
+        area({ scale: 1 }),
+        offscreen({ destroy: true })
     ])
     const direction = {
         w: vec2(0, -1),
@@ -41,18 +41,42 @@ scene("main", (index) => {
         for (const dir in direction) {
             onKeyDown(dir, () => {
                 player.move(direction[dir].scale(400))
+                if (dir == "a") {
+                    player.flipX = true
+                }
+                if (dir == "d") {
+                    player.flipX = false
+                }
             })
         }
     
-    const enemy = add([
-        sprite("ghost"),
-        pos(rand(0, width()), rand(0, height())),
-        scale(0.1),
-        anchor("center"),
-        area(),
-        "enemy"
-        ])
+        function addEnemy(){ add([
+            sprite("enemy"),
+            pos(rand(0, width()), rand(0, height())),
+            scale(0.3),
+            anchor("center"),
+            area(),
+            "enemy"
+            ])
+        }
 
+    loop(3, () => {
+        addEnemy()
+    })
+
+    loop(1, () => {
+        if (!player.exists()) return
+        const enemies = get("enemy")
+        enemies.forEach((e) => {
+            spawnEnemyBullet(player.pos,e.pos)
+        })
+    })
+
+    onUpdate("enemy", (e) => {
+        if (!player.exists()) return
+        const dir = player.pos.sub(e.pos).unit()
+        e.move(dir.scale(100))
+    })
 
     onMouseDown(() => {
         spawnBullet(player.pos)
@@ -63,26 +87,22 @@ scene("main", (index) => {
         destroy(e)
     })
 
-    onCollide("enemy", "player", (e, p) => {
-        destroy(p)
-        // go("gameover")
+    player.onCollide("enemyBullet", (eb) => {
+        destroy(eb)
+        destroy(player)
     })
 
-    onUpdate("enemy", () => {
-        if (!player.exists()) return
-        const dir = player.pos.sub(enemy.pos).unit()
-        enemy.move(dir.scale(100))
-    })
+
 
     player.onCollide("enemy", (e) => {
         destroy(player)
-        wait(2, () => go("main"))
+        // wait(2, () => go("main"))
+    })
+    onKeyPress("r", () => {
+        go("main")
+        console.log("restart")
     })
 })
-
-
-
-
 
 go("main")
 
