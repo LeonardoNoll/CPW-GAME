@@ -20,13 +20,42 @@ scene("main", (index) => {
         pos(0, 0),
         scale(2),
     ])
-
-    player()
-    enemy()
+    
+    const player = add([
+        sprite("player"),
+        pos(center()),
+        anchor("center"),
+        scale(0.10),
+        area(),
+    ])
+    const direction = {
+        w: vec2(0, -1),
+        up: vec2(0, -1),
+        s: vec2(0, 1),
+        down: vec2(0, 1),
+        a: vec2(-1, 0),
+        left: vec2(-1, 0),
+        d: vec2(1, 0),
+        right: vec2(1, 0),
+        }
+        for (const dir in direction) {
+            onKeyDown(dir, () => {
+                player.move(direction[dir].scale(400))
+            })
+        }
+    
+    const enemy = add([
+        sprite("ghost"),
+        pos(rand(0, width()), rand(0, height())),
+        scale(0.1),
+        anchor("center"),
+        area(),
+        "enemy"
+        ])
 
 
     onMouseDown(() => {
-        spawnBullet(get("player")[0].pos)
+        spawnBullet(player.pos)
     });
 
     onCollide("bullet", "enemy", (b, e) => {
@@ -39,16 +68,15 @@ scene("main", (index) => {
         // go("gameover")
     })
 
-    onUpdate("enemy", (e) => {
-        let auxX = get("player")[0].pos.x
-        let auxY = get("player")[0].pos.y
-        let dir = vec2(((auxX/width())-0.5)*2, ((auxY/height())-0.5)*2)
-        console.log(dir.scale(10))
-        e.move(dir.scale(50))
-        // if (!player.exists()) return
-        // const dir = player.pos.sub(e.pos).unit()
+    onUpdate("enemy", () => {
+        if (!player.exists()) return
+        const dir = player.pos.sub(enemy.pos).unit()
+        enemy.move(dir.scale(100))
+    })
 
-        // e.move(e.dir.scale(10))
+    player.onCollide("enemy", (e) => {
+        destroy(player)
+        wait(2, () => go("main"))
     })
 })
 

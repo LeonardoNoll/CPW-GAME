@@ -1,6 +1,6 @@
 import { player } from "./player.js"
 
-export function enemy(player){
+export function enemy(){
     add([
         sprite("ghost"),
         pos(rand(0, width()), rand(0, height())),

@@ -1,14 +1,14 @@
 export function player() {
-    add([
+    const player = add([
         sprite("player"),
         pos(center()),
         anchor("center"),
         scale(0.10),
-        area(),
-        "player"
+        area()
+        // "player"
     ])
 
-    const player = get("player")[0]
+    
 
     const direction = {
     w: vec2(0, -1),
@@ -25,4 +25,5 @@ export function player() {
             player.move(direction[dir].scale(400))
         })
     }
+    
 }
