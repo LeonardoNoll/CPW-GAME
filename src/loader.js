@@ -1,9 +1,12 @@
 export default function loadAll(){
     loadFont("isaacFont", "assets/IsaacGame.ttf")
-    loadSprite("background", "assets/background.png")
-    loadSprite("player", "assets/player.png")
+    loadSprite("backgroundFloor1", "assets/backgroundFloor1.png")
+    loadSprite("backgroundFloor2", "assets/backgroundFloor2.png")
+    loadSprite("backgroundFloor3", "assets/backgroundFloor3.png")
     loadSprite("bullet", "assets/bullet.png")
-    loadSprite("enemy", "assets/enemy.png")
+    loadSprite("lulu", "assets/lulu.png")
+    loadSprite("lulux", "assets/lulux.png")
+    loadSprite("heart", "assets/heart.png")
     loadSprite("playerSprites", "assets/playerSprites.png", {
         sliceX: 3,
         sliceY: 4,
