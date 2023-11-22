@@ -1,6 +1,9 @@
 export function spawnBullet(p) {
     add([
-        sprite("bullet"),
+        // sprite("bullet"),
+        circle(3),
+        color (rgb(185, 207, 252)),
+        outline(1, rgb(0, 0, 0)),
         area(),
         pos(p),
         scale(2),

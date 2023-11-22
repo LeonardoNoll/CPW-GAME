@@ -4,8 +4,8 @@ import { spawnBullet } from "./bullet.js";
 import { spawnEnemyBullet } from "./enemyBullet.js";
 
 const k = kaboom({
-    width: 900,
-    height: 600,
+    width: 924,
+    height: 620,
     scale: 1,
     letterbox: true
 })
@@ -23,17 +23,23 @@ scene("main", () => {
     ])
 
     const scoreboard = add([
-        text("Score: 0"),
-        pos(10, 10),
-        scale(2),
+        text("Score: 0", {
+            font: "isaacFont",
+        }),
+        
+        pos(center().x, 40),
+        scale(1),
+        anchor("center"),
     ])
 
     const player = add([
-        sprite("player"),
+        sprite("playerSprites", {
+            anim: "idle",
+        }),
         pos(center()),
         anchor("center"),
-        scale(0.5),
-        area({ scale: 1 }),
+        scale(2),
+        area({ shape: new Rect(vec2(0), 32,32), offset: vec2(0, 5) }),
         offscreen({ destroy: true })
     ])
     const direction = {
@@ -49,12 +55,35 @@ scene("main", () => {
         for (const dir in direction) {
             onKeyDown(dir, () => {
                 player.move(direction[dir].scale(400))
+            })
+            onKeyPress(dir, () => {
                 if (dir == "a") {
-                    player.flipX = true
+                    player.play("moveLeft")
                 }
                 if (dir == "d") {
-                    player.flipX = false
+                    player.play("moveRight")
                 }
+                if (dir == "w") {
+                    player.play("moveUp")
+                }
+                if (dir == "s") {
+                    player.play("moveDown")
+                }
+                player.animSpeed = 1
+            })
+            onKeyRelease (dir, () => {
+                    if (dir == "a" && player.curAnim() == "moveLeft") {
+                        player.play("idle")
+                    }
+                    if (dir == "d" && player.curAnim() == "moveRight") {
+                        player.play("idle")
+                    }
+                    if (dir == "w" && player.curAnim() == "moveUp") {
+                        player.play("idle")
+                    }
+                    if (dir == "s" && player.curAnim() == "moveDown") {
+                        player.play("idle")
+                    }
             })
         }
     
@@ -68,6 +97,11 @@ scene("main", () => {
             "enemy"
             ])
         }
+
+        onDestroy("enemy",() => {
+            score += 10
+            scoreboard.text = `Score: ${score}`
+        }),
 
     loop(3, () => {
         addEnemy()
@@ -94,8 +128,6 @@ scene("main", () => {
     onCollide("bullet", "enemy", (b, e) => {
         destroy(b)
         destroy(e)
-        score += 10
-        scoreboard.text = `Score: ${score}`
     })
 
     player.onCollide("enemyBullet", (eb) => {
@@ -112,6 +144,21 @@ scene("main", () => {
     onKeyPress("r", () => {
         go("main")
         console.log("restart")
+    })
+
+    player.onUpdate(() => {
+        if (player.pos.x < 120) {
+            player.pos.x = 120
+        }
+        if (player.pos.x > width()-120) {
+            player.pos.x = width()-120
+        }
+        if (player.pos.y < 60) {
+            player.pos.y = 60
+        }
+        if (player.pos.y > height()-150) {
+            player.pos.y = height()-150
+        }
     })
 })
 
