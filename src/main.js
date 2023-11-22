@@ -4,8 +4,10 @@ import { spawnBullet } from "./bullet.js";
 import { spawnEnemyBullet } from "./enemyBullet.js";
 import { addEnemy } from "./lulu.js";
 import { addLulux } from "./lulux.js";
+import { addLulucian } from "./lulucian.js";
 import { spawnLuluxLazer } from "./luluxLazer.js";
 import { healthHeart} from "./health.js";
+import { addPlayer } from "./player.js";
 
 const k = kaboom({
     width: 924,
@@ -14,12 +16,17 @@ const k = kaboom({
     letterbox: true
 })
 
-loadAll()
-
 let score = 0
 let highscore = 0
+const SPAWN_UP = vec2(width()/2,30)
+const SPAWN_DOWN = vec2(width()/2,height()-30)
+const SPAWN_LEFT = vec2(30,height()/2)
+const SPAWN_RIGHT = vec2(width()-30,height()/2)
+
+loadAll()
 
 scene("floor1", () => {
+    score = 0
     setBackground(0, 0, 0)
     
     add([
@@ -39,21 +46,12 @@ scene("floor1", () => {
         anchor("center"),
     ])
 
-    const player = add([
-        sprite("playerSprites", {
-            anim: "idle",
-        }),
-        health(3),
-        pos(center()),
-        anchor("center"),
-        scale(2),
-        area({ shape: new Rect(vec2(0), 32,32), offset: vec2(0, 5) }),
-        state("ready", ["ready", "cooldown" ]),
-    ])
+    const player = addPlayer()
     
     player.onStateEnter("cooldown", () => {
         wait(0.3, () => player.enterState("ready"))
     })
+    
     const direction = {
         w: vec2(0, -1),
         s: vec2(0, 1),
@@ -105,22 +103,24 @@ scene("floor1", () => {
         for (let i = 0; i < spawnNum+1; i++) {
             let spawnPos = randi(3)
             switch (spawnPos) {
-                case 0: addEnemy(width()/2,30) ; break;
-                case 1: addEnemy(width()/2,height()-30) ; break;
-                case 2: addEnemy(30,height()/2) ; break;
-                case 3: addEnemy(width()-30,height()/2) ; break;
+                case 0: addEnemy(SPAWN_UP) ; break;
+                case 1: addEnemy(SPAWN_DOWN) ; break;
+                case 2: addEnemy(SPAWN_LEFT) ; break;
+                case 3: addEnemy(SPAWN_RIGHT) ; break;
             }
+            console.log(SPAWN_UP)
         }
     })
     loop(5, () => {
         let spawnPos = randi(3)
         switch (spawnPos) {
-            case 0: addLulux(width()/2,30) ; break;
-            case 1: addLulux(width()/2,height()-30) ; break;
-            case 2: addLulux(30,height()/2) ; break;
-            case 3: addLulux(width()-30,height()/2) ; break;
+            case 0: addLulux(SPAWN_UP) ; break;
+            case 1: addLulux(SPAWN_DOWN) ; break;
+            case 2: addLulux(SPAWN_LEFT) ; break;
+            case 3: addLulux(SPAWN_RIGHT) ; break;
         }
     })
+
     loop(1, () => {
         if (!player.exists()) return
         const enemies = get("lulu")
@@ -224,17 +224,7 @@ scene("floor2", () => {
         healthHeart(160)
         ]
 
-    const player = add([
-        sprite("playerSprites", {
-            anim: "idle",
-        }),
-        health(3),
-        pos(center()),
-        anchor("center"),
-        scale(2),
-        area({ shape: new Rect(vec2(0), 32,32), offset: vec2(0, 5) }),
-        state("ready", ["ready", "cooldown" ]),
-    ])
+    const player = addPlayer()
 
     player.onStateEnter("cooldown", () => {
         wait(0.3, () => player.enterState("ready"))
@@ -280,28 +270,39 @@ scene("floor2", () => {
             })
         }
     
-    loop(3, () => {
-        let spawnNum = randi(2)
-        console.log(spawnNum)
-        for (let i = 0; i < spawnNum+1; i++) {
+    wait(2, () => {
+        loop(3, () => {
+            let spawnNum = randi(2)
+            console.log(spawnNum)
+            for (let i = 0; i < spawnNum+1; i++) {
+                let spawnPos = randi(3)
+                switch (spawnPos) {
+                    case 0: addEnemy(SPAWN_UP) ; break;
+                    case 1: addEnemy(SPAWN_DOWN) ; break;
+                    case 2: addEnemy(SPAWN_LEFT) ; break;
+                    case 3: addEnemy(SPAWN_RIGHT) ; break;
+                }
+                console.log(SPAWN_UP)
+            }
+        })
+        loop(5, () => {
             let spawnPos = randi(3)
             switch (spawnPos) {
-                case 0: addEnemy(width()/2,30) ; break;
-                case 1: addEnemy(width()/2,height()-30) ; break;
-                case 2: addEnemy(30,height()/2) ; break;
-                case 3: addEnemy(width()-30,height()/2) ; break;
+                case 0: addLulux(SPAWN_UP) ; break;
+                case 1: addLulux(SPAWN_DOWN) ; break;
+                case 2: addLulux(SPAWN_LEFT) ; break;
+                case 3: addLulux(SPAWN_RIGHT) ; break;
             }
-        }
-    })
-    loop(5, () => {
+        })
+    loop(4.5, () => {
         let spawnPos = randi(3)
         switch (spawnPos) {
-            case 0: addLulux(width()/2,30) ; break;
-            case 1: addLulux(width()/2,height()-30) ; break;
-            case 2: addLulux(30,height()/2) ; break;
-            case 3: addLulux(width()-30,height()/2) ; break;
+            case 0: addLulucian(SPAWN_UP) ; break;
+            case 1: addLulucian(SPAWN_DOWN) ; break;
+            case 2: addLulucian(SPAWN_LEFT) ; break;
+            case 3: addLulucian(SPAWN_RIGHT) ; break;
         }
-    })
+    })})
     loop(1, () => {
         if (!player.exists()) return
         const enemies = get("lulu")
@@ -361,7 +362,7 @@ scene("floor2", () => {
         go("gameover")
     })
     onKeyPress("r", () => {
-        go("main")
+        go("floor1")
         console.log("restart")
     })
 
@@ -406,17 +407,7 @@ scene("floor3", () => {
         healthHeart(160)
         ]
 
-    const player = add([
-        sprite("playerSprites", {
-            anim: "idle",
-        }),
-        health(3),
-        pos(center()),
-        anchor("center"),
-        scale(2),
-        area({ shape: new Rect(vec2(0), 32,32), offset: vec2(0, 5) }),
-        state("ready", ["ready", "cooldown" ]),
-    ])
+    const player = addPlayer()
 
     player.onStateEnter("cooldown", () => {
         wait(0.3, () => player.enterState("ready"))
@@ -540,7 +531,7 @@ scene("floor3", () => {
         go("gameover")
     })
     onKeyPress("r", () => {
-        go("main")
+        go("floor1")
         console.log("restart")
     })
 

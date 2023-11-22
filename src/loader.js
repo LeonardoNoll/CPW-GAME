@@ -6,6 +6,7 @@ export default function loadAll(){
     loadSprite("bullet", "assets/bullet.png")
     loadSprite("lulu", "assets/lulu.png")
     loadSprite("lulux", "assets/lulux.png")
+    loadSprite("lulucian", "assets/lulucian.png")
     loadSprite("heart", "assets/heart.png")
     loadSprite("playerSprites", "assets/playerSprites.png", {
         sliceX: 3,

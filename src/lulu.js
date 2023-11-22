@@ -1,7 +1,7 @@
 
-export function addEnemy(x,y){ add([
+export function addEnemy(xy){ add([
     sprite("lulu"),
-    pos(x,y),
+    pos(xy),
     scale(0.3),
     body(),
     health(1),

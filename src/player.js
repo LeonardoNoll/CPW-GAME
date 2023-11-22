@@ -1,29 +1,15 @@
-export function player() {
-    const player = add([
-        sprite("player"),
+export function addPlayer() {
+    return add([
+        sprite("playerSprites", {
+            anim: "idle",
+        }),
+        health(3),
         pos(center()),
         anchor("center"),
-        scale(0.10),
-        area()
-        // "player"
+        scale(2),
+        area({ shape: new Rect(vec2(0), 32,32), offset: vec2(0, 5) }),
+        state("ready", ["ready", "cooldown" ]),
     ])
-
-    
-
-    const direction = {
-    w: vec2(0, -1),
-    up: vec2(0, -1),
-    s: vec2(0, 1),
-    down: vec2(0, 1),
-    a: vec2(-1, 0),
-    left: vec2(-1, 0),
-    d: vec2(1, 0),
-    right: vec2(1, 0),
-    }
-    for (const dir in direction) {
-        onKeyDown(dir, () => {
-            player.move(direction[dir].scale(400))
-        })
-    }
     
 }
+
