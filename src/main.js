@@ -40,8 +40,13 @@ scene("main", () => {
         anchor("center"),
         scale(2),
         area({ shape: new Rect(vec2(0), 32,32), offset: vec2(0, 5) }),
-        offscreen({ destroy: true })
+        state("ready", ["ready", "cooldown" ]),
+        offscreen({ destroy: true })        
     ])
+
+    player.onStateEnter("cooldown", () => {
+        wait(0.5, () => player.enterState("ready"))
+    })
     const direction = {
         w: vec2(0, -1),
         up: vec2(0, -1),
@@ -87,9 +92,9 @@ scene("main", () => {
             })
         }
     
-        function addEnemy(){ add([
+        function addEnemy(x,y){ add([
             sprite("enemy"),
-            pos(rand(0, width()), rand(0, height())),
+            pos(x,y),
             scale(0.3),
             body(),
             anchor("center"),
@@ -104,7 +109,14 @@ scene("main", () => {
         }),
 
     loop(3, () => {
-        addEnemy()
+        let spawnPos = randi(3)
+        console.log(spawnPos)
+        switch (spawnPos) {
+            case 0: addEnemy(width()/2,30) ; break;
+            case 1: addEnemy(width()/2,height()-30) ; break;
+            case 2: addEnemy(30,height()/2) ; break;
+            case 3: addEnemy(width()-30,height()/2) ; break;
+        }
     })
 
     loop(1, () => {
@@ -122,7 +134,10 @@ scene("main", () => {
     })
 
     onMouseDown(() => {
+        if (!player.exists()) return
+        if (player.state != "ready") return
         spawnBullet(player.pos)
+        player.enterState("cooldown")
     });
 
     onCollide("bullet", "enemy", (b, e) => {
@@ -168,26 +183,34 @@ scene("gameover", () => {
     }
     setBackground(0, 0, 0)
     add([
-        text("Game Over"),
+        text("Game Over", {
+            font: "isaacFont",
+        }),
         pos(center().x, center().y - 200),
         scale(3),
         anchor("center"),
     ])
     add([
-        text("Final Score: " + score),
+        text("Final Score: " + score, {
+            font: "isaacFont",
+        }),
         pos(center().x, center().y - 100),
         scale(1.5),
         anchor("center"),
         score = 0
     ])
     add([
-        text("High Score: " + highscore),
+        text("High Score: " + highscore, {
+            font: "isaacFont",
+        }),
         pos(center().x, center().y - 50),
         scale(1.5),
         anchor("center"),
     ])
     add([
-        text("Press R to restart"),
+        text("Press R to restart", {
+            font: "isaacFont",
+        }),
         pos(center().x, center().y + 200),
         scale(2),
         anchor("center"),
