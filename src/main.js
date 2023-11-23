@@ -2,10 +2,11 @@ import kaboom from "https://unpkg.com/kaboom@3000.1/dist/kaboom.mjs";
 import loadAll from "./loader.js";
 import { spawnBullet } from "./bullet.js";
 import { spawnEnemyBullet } from "./enemyBullet.js";
-import { addEnemy } from "./lulu.js";
 import { addLulux } from "./lulux.js";
 import { addLulucian } from "./lulucian.js";
+import { addEnemy } from "./lulu.js";
 import { spawnLuluxLazer } from "./luluxLazer.js";
+import { spawnLulucianBullet } from "./lulucianBullet.js";
 import { healthHeart} from "./health.js";
 import { addPlayer } from "./player.js";
 
@@ -315,6 +316,15 @@ scene("floor2", () => {
         const enemies = get("lulux")
         enemies.forEach((e) => {
             spawnLuluxLazer(player.pos,e.pos)
+        })
+    })
+    loop(3, () => {
+        if (!player.exists()) return
+        const enemies = get("lulucian")
+        enemies.forEach((e) => {
+            for (let i = 0; i < 6; i++) {
+                spawnLulucianBullet(player.pos,vec2(e.pos.x+i*10,e.pos.y+i*10))
+            }
         })
     })
     onUpdate("lazer", (l) => {
