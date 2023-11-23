@@ -352,7 +352,7 @@ scene("floor2", () => {
         score += e.scoreValue
         scoreboard.text = `Score: ${score}`
         destroy(e)
-        if (score >= 200) {
+        if (score >= 1000) {
             go("floor3")
         }
     })
