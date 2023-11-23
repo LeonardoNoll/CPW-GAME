@@ -27,6 +27,12 @@ const SPAWN_RIGHT = vec2(width()-30,height()/2)
 loadAll()
 
 scene("floor1", () => {
+    //comandos para teste
+    onKeyPress("2", () => {
+        go("floor2")
+    })
+
+
     score = 0
     setBackground(0, 0, 0)
     
@@ -161,6 +167,15 @@ scene("floor1", () => {
         score += e.scoreValue
         scoreboard.text = `Score: ${score}`
         destroy(e)
+        add([
+            text(`+${e.scoreValue}`, {
+                font: "isaacFont",
+            }),
+            pos(e.pos),
+            scale(0.5+e.scoreValue/100),
+            move(vec2(0, -1), 10),
+            lifespan(1, { fade: 0.5 }),
+        ])
         if (score >= 400) {
             go("floor2")
         }
@@ -171,12 +186,13 @@ scene("floor1", () => {
         player.hurt(1)
     })
     
-    player.on("death", () => {
-        destroy(player)
-        go("gameover")
+    player.onCollide("enemy", (e) => {
+        destroy(e)
+        destroy(heartsArr.pop())
+        player.hurt(1)
     })
-
-    player.onCollide("enemy", () => {
+    
+    player.on("death", () => {
         destroy(player)
         go("gameover")
     })
@@ -323,7 +339,7 @@ scene("floor2", () => {
         const enemies = get("lulucian")
         enemies.forEach((e) => {
             for (let i = 0; i < 6; i++) {
-                spawnLulucianBullet(player.pos,vec2(e.pos.x+i*10,e.pos.y+i*10))
+                spawnLulucianBullet(vec2(player.pos.x+i*30,player.pos.y+i*10),e.pos)
             }
         })
     })
@@ -352,6 +368,15 @@ scene("floor2", () => {
         score += e.scoreValue
         scoreboard.text = `Score: ${score}`
         destroy(e)
+        add([
+            text(`+${e.scoreValue}`, {
+                font: "isaacFont",
+            }),
+            pos(e.pos),
+            scale(0.5+e.scoreValue/100),
+            move(vec2(0, -1), 10),
+            lifespan(1, { fade: 0.5 }),
+        ])
         if (score >= 1000) {
             go("floor3")
         }

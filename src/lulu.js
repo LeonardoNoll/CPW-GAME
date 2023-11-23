@@ -8,7 +8,7 @@ export function addEnemy(xy){ add([
     anchor("center"),
     area(),
     {
-        speed: 200,
+        speed: 100,
         scoreValue: 10,
     },
     "enemy",

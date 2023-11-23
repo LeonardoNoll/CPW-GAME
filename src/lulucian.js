@@ -8,7 +8,7 @@ export function addLulucian(xy){
     anchor("center"),
     area(),
     {
-        speed: 130,
+        speed: 65,
         scoreValue: 50,
     },
     "enemy",
