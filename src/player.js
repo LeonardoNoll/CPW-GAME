@@ -7,9 +7,10 @@ export function addPlayer() {
         pos(center()),
         anchor("center"),
         scale(2),
-        area({ shape: new Rect(vec2(0), 32,32), offset: vec2(0, 5) }),
+        area({ shape: new Rect(vec2(0), 32,32), offset: vec2(0, 5)}),
         state("ready", ["ready", "cooldown" ]),
     ])
     
 }
+
 

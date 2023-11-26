@@ -1,5 +1,11 @@
 export default function loadAll(){
     loadFont("isaacFont", "assets/IsaacGame.ttf")
+    loadSound("hurt0", "assets/audios/hurt0.wav")
+    loadSound("hurt1", "assets/audios/hurt1.wav")
+    loadSound("hurt2", "assets/audios/hurt2.wav")
+    loadSound("risada_lulu", "assets/audios/pt_br_lulu.mp3")
+    loadSound("point", "assets/audios/point.mp3")
+    loadSound("hit", "assets/audios/hit.wav")
     loadSprite("backgroundFloor1", "assets/backgroundFloor1.png")
     loadSprite("backgroundFloor2", "assets/backgroundFloor2.png")
     loadSprite("backgroundFloor3", "assets/backgroundFloor3.png")
@@ -7,6 +13,7 @@ export default function loadAll(){
     loadSprite("lulu", "assets/lulu.png")
     loadSprite("lulux", "assets/lulux.png")
     loadSprite("lulucian", "assets/lulucian.png")
+    loadSprite("zedu", "assets/zedu.png")
     loadSprite("heart", "assets/heart.png")
     loadSprite("playerSprites", "assets/playerSprites.png", {
         sliceX: 3,

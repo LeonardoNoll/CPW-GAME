@@ -9,6 +9,7 @@ import { spawnLuluxLazer } from "./luluxLazer.js";
 import { spawnLulucianBullet } from "./lulucianBullet.js";
 import { healthHeart} from "./health.js";
 import { addPlayer } from "./player.js";
+import { addZedu } from "./zedu.js";
 
 const k = kaboom({
     width: 924,
@@ -31,6 +32,9 @@ scene("floor1", () => {
     onKeyPress("2", () => {
         go("floor2")
     })
+    onKeyPress("3", () => {
+        go("floor3")
+    })
 
 
     score = 0
@@ -38,7 +42,8 @@ scene("floor1", () => {
     
     add([
         sprite("backgroundFloor1"),
-        pos(0, 0),
+        pos(center()),
+        anchor("center"),
         scale(2),
     ])
 
@@ -115,7 +120,6 @@ scene("floor1", () => {
                 case 2: addEnemy(SPAWN_LEFT) ; break;
                 case 3: addEnemy(SPAWN_RIGHT) ; break;
             }
-            console.log(SPAWN_UP)
         }
     })
     loop(5, () => {
@@ -164,9 +168,10 @@ scene("floor1", () => {
     })
 
     on("death", "enemy", (e) => {
+        destroy(e)
+        play("point", {volume: e.scoreValue/100})
         score += e.scoreValue
         scoreboard.text = `Score: ${score}`
-        destroy(e)
         add([
             text(`+${e.scoreValue}`, {
                 font: "isaacFont",
@@ -180,16 +185,19 @@ scene("floor1", () => {
             go("floor2")
         }
     })
-    player.onCollide("enemyBullet", (eb) => {
-        destroy(eb)
-        destroy(heartsArr.pop())
+    player.onCollide("enemyBullet", () => {
         player.hurt(1)
     })
     
     player.onCollide("enemy", (e) => {
         destroy(e)
-        destroy(heartsArr.pop())
         player.hurt(1)
+    })
+
+    player.on("hurt", () => {
+        destroyAll("enemyBullet")
+        destroy(heartsArr.pop())
+        play(`hurt${randi(2)}`, {volume: 0.2})
     })
     
     player.on("death", () => {
@@ -198,7 +206,6 @@ scene("floor1", () => {
     })
     onKeyPress("r", () => {
         go("floor1")
-        console.log("restart")
     })
     player.onUpdate(() => {
         if (player.pos.x < 120) {
@@ -221,8 +228,9 @@ scene("floor2", () => {
     
     add([
         sprite("backgroundFloor2"),
-        pos(0, 0),
-        scale(2),
+        pos(center()),
+        anchor("center"),
+        scale(1.98),
     ])
 
     const scoreboard = add([
@@ -290,7 +298,6 @@ scene("floor2", () => {
     wait(2, () => {
         loop(3, () => {
             let spawnNum = randi(2)
-            console.log(spawnNum)
             for (let i = 0; i < spawnNum+1; i++) {
                 let spawnPos = randi(3)
                 switch (spawnPos) {
@@ -299,7 +306,6 @@ scene("floor2", () => {
                     case 2: addEnemy(SPAWN_LEFT) ; break;
                     case 3: addEnemy(SPAWN_RIGHT) ; break;
                 }
-                console.log(SPAWN_UP)
             }
         })
         loop(5, () => {
@@ -365,9 +371,10 @@ scene("floor2", () => {
     })
 
     on("death", "enemy", (e) => {
+        destroy(e)
+        play("point", {volume: e.scoreValue/100})
         score += e.scoreValue
         scoreboard.text = `Score: ${score}`
-        destroy(e)
         add([
             text(`+${e.scoreValue}`, {
                 font: "isaacFont",
@@ -381,10 +388,19 @@ scene("floor2", () => {
             go("floor3")
         }
     })
-    player.onCollide("enemyBullet", (eb) => {
-        destroy(eb)
-        destroy(heartsArr.pop())
+    player.onCollide("enemyBullet", () => {
         player.hurt(1)
+    })
+
+    player.onCollide("enemy", (e) => {
+        destroy(e)
+        player.hurt(1)
+    })
+
+    player.on("hurt", () => {
+        destroyAll("enemyBullet")
+        destroy(heartsArr.pop())
+        play(`hurt${randi(2)}`, {volume: 0.2})
     })
     
     player.on("death", () => {
@@ -392,13 +408,8 @@ scene("floor2", () => {
         go("gameover")
     })
 
-    player.onCollide("enemy", () => {
-        destroy(player)
-        go("gameover")
-    })
     onKeyPress("r", () => {
         go("floor1")
-        console.log("restart")
     })
 
     player.onUpdate(() => {
@@ -422,8 +433,9 @@ scene("floor3", () => {
     
     add([
         sprite("backgroundFloor3"),
-        pos(0, 0),
-        scale(2),
+        pos(center()),
+        anchor("center"),
+        scale(1.98),
     ])
 
     const scoreboard = add([
@@ -488,28 +500,50 @@ scene("floor3", () => {
             })
         }
     
-    loop(3, () => {
-        let spawnNum = randi(2)
-        console.log(spawnNum)
-        for (let i = 0; i < spawnNum+1; i++) {
+    wait(2, () => {
+        loop(3, () => {
+            let spawnNum = randi(2)
+            for (let i = 0; i < spawnNum+1; i++) {
+                let spawnPos = randi(3)
+                switch (spawnPos) {
+                    case 0: addEnemy(SPAWN_UP) ; break;
+                    case 1: addEnemy(SPAWN_DOWN) ; break;
+                    case 2: addEnemy(SPAWN_LEFT) ; break;
+                    case 3: addEnemy(SPAWN_RIGHT) ; break;
+                }
+            }
+        })
+        loop(5, () => {
             let spawnPos = randi(3)
             switch (spawnPos) {
-                case 0: addEnemy(width()/2,30) ; break;
-                case 1: addEnemy(width()/2,height()-30) ; break;
-                case 2: addEnemy(30,height()/2) ; break;
-                case 3: addEnemy(width()-30,height()/2) ; break;
+                case 0: addLulux(SPAWN_UP) ; break;
+                case 1: addLulux(SPAWN_DOWN) ; break;
+                case 2: addLulux(SPAWN_LEFT) ; break;
+                case 3: addLulux(SPAWN_RIGHT) ; break;
             }
-        }
-    })
-    loop(5, () => {
+        })
+    wait(2, () => {
+    loop(4.5, () => {
         let spawnPos = randi(3)
         switch (spawnPos) {
-            case 0: addLulux(width()/2,30) ; break;
-            case 1: addLulux(width()/2,height()-30) ; break;
-            case 2: addLulux(30,height()/2) ; break;
-            case 3: addLulux(width()-30,height()/2) ; break;
+            case 0: addLulucian(SPAWN_UP) ; break;
+            case 1: addLulucian(SPAWN_DOWN) ; break;
+            case 2: addLulucian(SPAWN_LEFT) ; break;
+            case 3: addLulucian(SPAWN_RIGHT) ; break;
         }
     })
+    loop(9, () => {
+        let spawnPos = randi(3)
+        switch (spawnPos) {
+            case 0: addZedu(SPAWN_UP) ; break;
+            case 1: addZedu(SPAWN_DOWN) ; break;
+            case 2: addZedu(SPAWN_LEFT) ; break;
+            case 3: addZedu(SPAWN_RIGHT) ; break;
+        }
+    })
+})
+
+})
     loop(1, () => {
         if (!player.exists()) return
         const enemies = get("lulu")
@@ -524,9 +558,58 @@ scene("floor3", () => {
             spawnLuluxLazer(player.pos,e.pos)
         })
     })
+    loop(3, () => {
+        if (!player.exists()) return
+        const enemies = get("lulucian")
+        enemies.forEach((e) => {
+            for (let i = 0; i < 6; i++) {
+                spawnLulucianBullet(vec2(player.pos.x+i*30,player.pos.y+i*10),e.pos)
+            }
+        })
+    })
     onUpdate("lazer", (l) => {
 			l.color = rand(rgb(0, 0, 0), rgb(255, 255, 255))
 	})
+
+
+    let curTween = null
+    
+    loop(3, () => {
+        const allZedus = get("zedu")
+        if (allZedus.length == 0) return
+        const ATTACK_TARGET = player.pos
+        const line1 = add([
+            rect(70, 10),
+            pos(ATTACK_TARGET),
+            color(255,0,0),
+            anchor("center"),
+            rotate(45),
+            area({ offset: vec2(0, 10) }),
+            lifespan(1, { fade: 0.5 }),
+        ]);
+        
+        const line2 = add([
+            rect(70, 10),
+            pos(ATTACK_TARGET),
+            color(255,0,0),
+            anchor("center"),
+            rotate(-45),
+            area({ offset: vec2(0, 10) }),
+            lifespan(1, { fade: 0.5 }),
+        ]);
+        wait(1, () => {
+        allZedus.forEach((e) => { 
+                curTween = tween(
+                    e.pos,
+                    vec2(ATTACK_TARGET.x+rand(-50,50), ATTACK_TARGET.y+rand(-50,50)),
+                    0.5,
+                    (val) => e.pos = val,
+                    easings.easeInOutQuad
+            )
+        })
+        })
+    })
+
     onUpdate("enemy", (e) => {
         if (!player.exists()) return
         const dir = player.pos.sub(e.pos).unit()
@@ -538,7 +621,7 @@ scene("floor3", () => {
         if (player.state != "ready") return
         spawnBullet(player.pos)
         player.enterState("cooldown")
-    });
+    })
 
     onCollide("bullet", "enemy", (b, e) => {
         destroy(b)
@@ -546,28 +629,42 @@ scene("floor3", () => {
     })
 
     on("death", "enemy", (e) => {
+        destroy(e)
+        play("point", {volume: e.scoreValue/100})
         score += e.scoreValue
         scoreboard.text = `Score: ${score}`
-        destroy(e)
+        add([
+            text(`+${e.scoreValue}`, {
+                font: "isaacFont",
+            }),
+            pos(e.pos),
+            scale(0.5+e.scoreValue/100),
+            move(vec2(0, -1), 10),
+            lifespan(1, { fade: 0.5 }),
+        ])
     })
-    player.onCollide("enemyBullet", (eb) => {
-        destroy(eb)
-        destroy(heartsArr.pop())
+    player.onCollide("enemyBullet", () => {
         player.hurt(1)
     })
     
+    player.onCollide("enemy", (e) => {
+        destroy(e)
+        player.hurt(1)
+    })
+    
+    player.on("hurt", () => {
+        destroyAll("enemyBullet")
+        destroy(heartsArr.pop())
+        play(`hurt${randi(2)}`, {volume: 0.2})
+    })
+
     player.on("death", () => {
         destroy(player)
         go("gameover")
     })
 
-    player.onCollide("enemy", () => {
-        destroy(player)
-        go("gameover")
-    })
     onKeyPress("r", () => {
         go("floor1")
-        console.log("restart")
     })
 
     player.onUpdate(() => {
@@ -587,6 +684,10 @@ scene("floor3", () => {
 })
 
 scene("gameover", () => {
+    wait(1, () => {
+        play("risada_lulu", {volume: 0.2})
+    })
+
     if (score > highscore) {
         highscore = score
     }
