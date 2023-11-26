@@ -730,7 +730,50 @@ scene("gameover", () => {
     })
 })
 
-go("floor1")
+scene ("title", () => {
+    setBackground(0, 0, 0)
+    add([
+        sprite("title_bg"),
+        pos(center()),
+        anchor("center"),
+        scale(2.5),
+    ])
+    add([
+        text("Isaac's\nNightmare", {
+            font: "isaacTitleFont",
+            align: "center",
+        }),
+        rotate(5),
+        pos(center().x+30, center().y + -180),
+        scale(1.8),
+        color(BLACK),
+        anchor("center"),
+    ])
+    add([
+        sprite("awsd"),
+        pos(center().x-10, center().y + 50),
+        rotate(5),
+        scale(0.5),
+        anchor("center"),
+    ])
+    
+    
+    add([
+        text("Press Enter to start", {
+            font: "isaacTitleFont",
+        }),
+        rotate(5),
+        pos(center().x-10, center().y + 200),
+        scale(1),
+        color(BLACK),
+        anchor("center"),
+    ])
+    onKeyPress("enter", () => {
+        go("floor1")
+    })
+})
+
+go("title")
 
 
 

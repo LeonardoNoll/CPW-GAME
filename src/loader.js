@@ -1,5 +1,6 @@
 export default function loadAll(){
     loadFont("isaacFont", "assets/IsaacGame.ttf")
+    loadFont("isaacTitleFont", "assets/titleFont.ttf")
     loadSound("hurt0", "assets/audios/hurt0.wav")
     loadSound("hurt1", "assets/audios/hurt1.wav")
     loadSound("hurt2", "assets/audios/hurt2.wav")
@@ -9,6 +10,8 @@ export default function loadAll(){
     loadSprite("backgroundFloor1", "assets/backgroundFloor1.png")
     loadSprite("backgroundFloor2", "assets/backgroundFloor2.png")
     loadSprite("backgroundFloor3", "assets/backgroundFloor3.png")
+    loadSprite("title_bg", "assets/title_bg.png")
+    loadSprite("awsd", "assets/awsd.png")
     loadSprite("bullet", "assets/bullet.png")
     loadSprite("lulu", "assets/lulu.png")
     loadSprite("lulux", "assets/lulux.png")
